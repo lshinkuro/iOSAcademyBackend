@@ -14,8 +14,14 @@ func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
-	// Courses routes
+	// Auth routes (public)
+	auth := v1.Group("/auth")
+	auth.Post("/signup", handlers.SignUp)
+	auth.Post("/signin", handlers.SignIn)
+
+	// Courses routes (protected)
 	courses := v1.Group("/courses")
+	courses.Use(middleware.Protected()) // Add authentication middleware
 	courses.Get("/", handlers.GetAllCourses)
 	courses.Get("/:id", handlers.GetCourse)
 	courses.Post("/", handlers.CreateCourse)

@@ -49,7 +49,8 @@ func ConnectDB() {
 	// Log auto-migration attempt
 	log.Println("Attempting to run auto-migrations...")
 
-	err = DB.AutoMigrate(&models.Course{})
+	// Add User model to auto-migrations
+	err = DB.AutoMigrate(&models.Course{}, &models.User{})
 	if err != nil {
 		log.Fatal("Failed to run auto-migrations: ", err)
 	}

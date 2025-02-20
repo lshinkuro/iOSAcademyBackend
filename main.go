@@ -36,8 +36,16 @@ func main() {
 	})
 
 	// Middleware
-	log.Println("Setting up middleware...")
-	app.Use(cors.New())
+	// log.Println("Setting up middleware...")
+	// app.Use(cors.New())
+
+	// ✅ Tambahkan middleware CORS di sini
+	log.Println("Setting up CORS middleware...")
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Bisa diganti dengan domain frontend
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+	}))
 
 	// Setup routes
 	log.Println("Setting up routes...")

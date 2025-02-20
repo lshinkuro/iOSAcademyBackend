@@ -9,7 +9,7 @@ import (
 type ContentTopic struct {
 	gorm.Model
 	Title      string            `json:"title" validate:"required"`
-	Topics     types.StringArray `json:"topics" gorm:"type:jsonb" validate:"required"`
+	Topics     types.StringArray `json:"topics" gorm:"type:json" validate:"required"`
 	MaterialID uint              `json:"material_id"`
 	Material   *Material         `json:"-" gorm:"foreignKey:MaterialID"`
 }
@@ -33,7 +33,7 @@ type Material struct {
 	Icon           string              `json:"icon" validate:"required"`
 	Duration       int                 `json:"duration" validate:"required,min=1"`
 	Lessons        int                 `json:"lessons" validate:"required,min=1"`
-	LearningPoints types.LearningPoint `json:"learningPoints" gorm:"type:jsonb" validate:"required"`
+	LearningPoints types.LearningPoint `json:"learningPoints" gorm:"type:json" validate:"required"`
 	Content        []ContentTopic      `json:"content" gorm:"foreignKey:MaterialID"`
 	VideoCourses   []VideoCourse       `json:"videoCourses" gorm:"foreignKey:MaterialID"`
 }

@@ -12,7 +12,7 @@ type Program struct {
 	Type     string            `json:"type" validate:"required,oneof=regular intensive"`
 	Duration string            `json:"duration" validate:"required"`
 	Price    float64           `json:"price" validate:"required,min=0"`
-	Features types.StringArray `json:"features" gorm:"type:jsonb" validate:"required,min=1"`
+	Features types.StringArray `json:"features" gorm:"type:json" validate:"required,min=1"`
 }
 
 type CreateProgramInput struct {

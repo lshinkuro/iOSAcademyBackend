@@ -45,8 +45,8 @@ func main() {
 	log.Println("Routes configured successfully")
 
 	// Start server
-	log.Println("Starting server on 0.0.0.0:8000...")
-	if err := app.Listen("0.0.0.0:8000"); err != nil {
+	log.Println("Starting server on 0.0.0.0:3000...")
+	if err := app.Listen(":3000"); err != nil {
 		log.Fatal("Failed to start server: ", err)
 	}
 }

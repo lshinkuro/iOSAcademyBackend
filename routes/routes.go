@@ -3,6 +3,7 @@ package routes
 import (
 	"course-api/handlers"
 	"course-api/middleware"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -27,4 +28,22 @@ func SetupRoutes(app *fiber.App) {
 	courses.Post("/", handlers.CreateCourse)
 	courses.Put("/:id", handlers.UpdateCourse)
 	courses.Delete("/:id", handlers.DeleteCourse)
+
+	// Programs routes (protected)
+	programs := v1.Group("/programs")
+	// programs.Use(middleware.Protected()) // Add authentication middleware
+	programs.Get("/", handlers.GetAllPrograms)
+	programs.Get("/:id", handlers.GetProgram)
+	programs.Post("/", handlers.CreateProgram)
+	programs.Put("/:id", handlers.UpdateProgram)
+	programs.Delete("/:id", handlers.DeleteProgram)
+
+	// Materials routes (protected)
+	materials := v1.Group("/materials")
+	materials.Use(middleware.Protected()) // Add authentication middleware
+	materials.Get("/", handlers.GetAllMaterials)
+	materials.Get("/:id", handlers.GetMaterial)
+	materials.Post("/", handlers.CreateMaterial)
+	materials.Put("/:id", handlers.UpdateMaterial)
+	materials.Delete("/:id", handlers.DeleteMaterial)
 }

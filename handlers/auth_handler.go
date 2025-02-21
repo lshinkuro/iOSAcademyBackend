@@ -88,6 +88,7 @@ func SignIn(c *fiber.Ctx) error {
 			"id":        user.ID,
 			"email":     user.Email,
 			"full_name": user.FullName,
+			"role":      user.Role,
 		},
 	})
 }

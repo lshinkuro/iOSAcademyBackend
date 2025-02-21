@@ -3,6 +3,7 @@ package routes
 import (
 	"course-api/handlers"
 	"course-api/middleware"
+	"course-api/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,18 +23,22 @@ func SetupRoutes(app *fiber.App) {
 
 	// Courses routes (protected)
 	courses := v1.Group("/courses")
-	courses.Use(middleware.Protected()) // Add authentication middleware
+	courses.Use(middleware.Protected())
 	courses.Get("/", handlers.GetAllCourses)
 	courses.Get("/:id", handlers.GetCourse)
+
+	courses.Use(middleware.RequireRole(models.RoleAdmin, models.RoleMentor))
 	courses.Post("/", handlers.CreateCourse)
 	courses.Put("/:id", handlers.UpdateCourse)
 	courses.Delete("/:id", handlers.DeleteCourse)
 
 	// Programs routes (protected)
 	programs := v1.Group("/programs")
-	// programs.Use(middleware.Protected()) // Add authentication middleware
+	programs.Use(middleware.Protected()) // Add authentication middleware
 	programs.Get("/", handlers.GetAllPrograms)
 	programs.Get("/:id", handlers.GetProgram)
+
+	programs.Use(middleware.RequireRole(models.RoleAdmin, models.RoleMentor))
 	programs.Post("/", handlers.CreateProgram)
 	programs.Put("/:id", handlers.UpdateProgram)
 	programs.Delete("/:id", handlers.DeleteProgram)
@@ -43,6 +48,8 @@ func SetupRoutes(app *fiber.App) {
 	materials.Use(middleware.Protected()) // Add authentication middleware
 	materials.Get("/", handlers.GetAllMaterials)
 	materials.Get("/:id", handlers.GetMaterial)
+
+	materials.Use(middleware.RequireRole(models.RoleAdmin, models.RoleMentor))
 	materials.Post("/", handlers.CreateMaterial)
 	materials.Put("/:id", handlers.UpdateMaterial)
 	materials.Delete("/:id", handlers.DeleteMaterial)

@@ -5,6 +5,7 @@ import (
 	"course-api/middleware"
 	"course-api/models"
 	"course-api/responses"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -29,6 +30,7 @@ func SignUp(c *fiber.Ctx) error {
 		Email:    input.Email,
 		Password: input.Password,
 		FullName: input.FullName,
+		Role:     input.Role,
 	}
 
 	if err := user.HashPassword(); err != nil {
@@ -39,7 +41,7 @@ func SignUp(c *fiber.Ctx) error {
 		return responses.SendError(c, fiber.StatusInternalServerError, "Error creating user")
 	}
 
-	token, err := middleware.GenerateToken(user.ID)
+	token, err := middleware.GenerateToken(user.ID, user.Role)
 	if err != nil {
 		return responses.SendError(c, fiber.StatusInternalServerError, "Error generating token")
 	}
@@ -50,6 +52,7 @@ func SignUp(c *fiber.Ctx) error {
 			"id":        user.ID,
 			"email":     user.Email,
 			"full_name": user.FullName,
+			"role":      user.Role,
 		},
 	})
 }
@@ -74,7 +77,7 @@ func SignIn(c *fiber.Ctx) error {
 		return responses.SendError(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	token, err := middleware.GenerateToken(user.ID)
+	token, err := middleware.GenerateToken(user.ID, user.Role)
 	if err != nil {
 		return responses.SendError(c, fiber.StatusInternalServerError, "Error generating token")
 	}

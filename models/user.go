@@ -1,21 +1,31 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+)
+
+type Role string
+
+const (
+	RoleAdmin   Role = "admin"
+	RoleStudent Role = "student"
+	RoleMentor  Role = "mentor"
 )
 
 type User struct {
 	gorm.Model
-	Email     string `json:"email" gorm:"unique" validate:"required,email"`
-	Password  string `json:"-" validate:"required,min=6"`
-	FullName  string `json:"full_name" validate:"required"`
+	Email    string `json:"email" gorm:"unique" validate:"required,email"`
+	Password string `json:"-" validate:"required,min=6"`
+	FullName string `json:"full_name" validate:"required"`
+	Role     Role   `json:"role" gorm:"type:varchar(10);default:'student'" validate:"required,oneof=admin student mentor"`
 }
 
 type SignupInput struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
 	FullName string `json:"full_name" validate:"required"`
+	Role     Role   `json:"role" validate:"required,oneof=admin student mentor"`
 }
 
 type LoginInput struct {

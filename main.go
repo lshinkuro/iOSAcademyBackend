@@ -24,6 +24,12 @@ func main() {
 	config.ConnectDB()
 	log.Println("Database connection initialized successfully")
 
+	// Initialize Redis connection
+	log.Println("Initializing Redis connection...")
+	config.ConnectRedis()
+	defer config.CloseRedis()
+	log.Println("Redis connection established")
+
 	// Create Fiber app
 	log.Println("Creating Fiber application...")
 	app := fiber.New(fiber.Config{

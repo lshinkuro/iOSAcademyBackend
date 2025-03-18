@@ -5,6 +5,8 @@ import (
 	"course-api/routes"
 	"log"
 
+	_ "course-api/docs" // Import swagger docs
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"

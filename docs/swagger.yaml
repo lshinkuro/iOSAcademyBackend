@@ -1,0 +1,868 @@
+definitions:
+  models.ContentTopic:
+    properties:
+      content:
+        description: HTML content field
+        type: string
+      material_id:
+        type: integer
+      order:
+        description: For ordering content within a material
+        type: integer
+      title:
+        type: string
+      topics:
+        items:
+          type: string
+        type: array
+    required:
+    - content
+    - title
+    - topics
+    type: object
+  models.Course:
+    properties:
+      description:
+        type: string
+      duration:
+        minimum: 1
+        type: integer
+      instructor:
+        type: string
+      price:
+        minimum: 0
+        type: number
+      title:
+        type: string
+    required:
+    - description
+    - duration
+    - instructor
+    - price
+    - title
+    type: object
+  models.CreateContentTopicInput:
+    properties:
+      content:
+        description: HTML content
+        type: string
+      material_id:
+        type: integer
+      order:
+        type: integer
+      title:
+        type: string
+      topics:
+        items:
+          type: string
+        type: array
+    required:
+    - content
+    - material_id
+    - title
+    - topics
+    type: object
+  models.CreateCourseInput:
+    properties:
+      description:
+        type: string
+      duration:
+        minimum: 1
+        type: integer
+      instructor:
+        type: string
+      price:
+        minimum: 0
+        type: number
+      title:
+        type: string
+    required:
+    - description
+    - duration
+    - instructor
+    - price
+    - title
+    type: object
+  models.CreateProgramInput:
+    properties:
+      duration:
+        type: string
+      features:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      price:
+        minimum: 0
+        type: number
+      title:
+        type: string
+      type:
+        enum:
+        - regular
+        - intensive
+        type: string
+    required:
+    - duration
+    - features
+    - price
+    - title
+    - type
+    type: object
+  models.LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.Program:
+    properties:
+      duration:
+        type: string
+      features:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      price:
+        minimum: 0
+        type: number
+      title:
+        type: string
+      type:
+        enum:
+        - regular
+        - intensive
+        type: string
+    required:
+    - duration
+    - features
+    - price
+    - title
+    - type
+    type: object
+  models.Role:
+    enum:
+    - admin
+    - student
+    - mentor
+    type: string
+    x-enum-varnames:
+    - RoleAdmin
+    - RoleStudent
+    - RoleMentor
+  models.SignupInput:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/models.Role'
+        enum:
+        - admin
+        - student
+        - mentor
+    required:
+    - email
+    - full_name
+    - password
+    - role
+    type: object
+  models.UpdateContentTopicInput:
+    properties:
+      content:
+        description: HTML content
+        type: string
+      order:
+        type: integer
+      title:
+        type: string
+      topics:
+        items:
+          type: string
+        type: array
+    type: object
+  models.UpdateCourseInput:
+    properties:
+      description:
+        type: string
+      duration:
+        minimum: 1
+        type: integer
+      instructor:
+        type: string
+      price:
+        minimum: 0
+        type: number
+      title:
+        type: string
+    type: object
+  models.UpdateProgramInput:
+    properties:
+      duration:
+        type: string
+      features:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      price:
+        minimum: 0
+        type: number
+      title:
+        type: string
+      type:
+        enum:
+        - regular
+        - intensive
+        type: string
+    type: object
+  responses.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with email and password
+      parameters:
+      - description: User login credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Response'
+      summary: Authenticate user
+      tags:
+      - auth
+  /api/v1/auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account with the provided details
+      parameters:
+      - description: User registration details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignupInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Response'
+      summary: Register a new user
+      tags:
+      - auth
+  /content:
+    post:
+      consumes:
+      - application/json
+      description: Create a new content topic with HTML content
+      parameters:
+      - description: Content Topic creation details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateContentTopicInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.ContentTopic'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new content topic
+      tags:
+      - content
+  /content/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a content topic by its ID
+      parameters:
+      - description: Content Topic ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a content topic
+      tags:
+      - content
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific content topic by its ID
+      parameters:
+      - description: Content Topic ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.ContentTopic'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a specific content topic
+      tags:
+      - content
+    put:
+      consumes:
+      - application/json
+      description: Update an existing content topic's details including HTML content
+      parameters:
+      - description: Content Topic ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Content Topic update details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateContentTopicInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.ContentTopic'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update a content topic
+      tags:
+      - content
+  /courses:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all courses from the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Course'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all courses
+      tags:
+      - courses
+    post:
+      consumes:
+      - application/json
+      description: Create a new course with the provided details
+      parameters:
+      - description: Course creation details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCourseInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Course'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new course
+      tags:
+      - courses
+  /courses/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a course by its ID
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a course
+      tags:
+      - courses
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific course by its ID
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Course'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a course by ID
+      tags:
+      - courses
+    put:
+      consumes:
+      - application/json
+      description: Update an existing course's details
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Course update details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCourseInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Course'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update a course
+      tags:
+      - courses
+  /materials/{material_id}/content:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all content topics for a specific material
+      parameters:
+      - description: Material ID
+        in: path
+        name: material_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.ContentTopic'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all content topics for a material
+      tags:
+      - content
+  /programs:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all programs from the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Program'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all programs
+      tags:
+      - programs
+    post:
+      consumes:
+      - application/json
+      description: Create a new program with the provided details
+      parameters:
+      - description: Program creation details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProgramInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Program'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new program
+      tags:
+      - programs
+  /programs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a program by its ID
+      parameters:
+      - description: Program ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a program
+      tags:
+      - programs
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific program by its ID
+      parameters:
+      - description: Program ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Program'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a program by ID
+      tags:
+      - programs
+    put:
+      consumes:
+      - application/json
+      description: Update an existing program's details
+      parameters:
+      - description: Program ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Program update details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateProgramInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Program'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update a program
+      tags:
+      - programs
+swagger: "2.0"

@@ -14,6 +14,17 @@ import (
 
 var validate = validator.New()
 
+// GetAllCourses godoc
+// @Summary Get all courses
+// @Description Retrieve all courses from the system
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=[]models.Course}
+// @Failure 401 {object} responses.Response
+// @Failure 500 {object} responses.Response
+// @Router /courses [get]
 // GetAllCourses returns all courses with Redis caching
 func GetAllCourses(c *fiber.Ctx) error {
 	ctx := context.Background()
@@ -40,6 +51,18 @@ func GetAllCourses(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Courses found successfully", courses)
 }
 
+// GetCourse godoc
+// @Summary Get a course by ID
+// @Description Retrieve a specific course by its ID
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Param id path int true "Course ID"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=models.Course}
+// @Failure 401 {object} responses.Response
+// @Failure 404 {object} responses.Response
+// @Router /courses/{id} [get]
 // GetCourse returns a single course with Redis caching
 func GetCourse(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -66,6 +89,19 @@ func GetCourse(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Course found successfully", course)
 }
 
+// CreateCourse godoc
+// @Summary Create a new course
+// @Description Create a new course with the provided details
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Param input body models.CreateCourseInput true "Course creation details"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=models.Course}
+// @Failure 400 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 500 {object} responses.Response
+// @Router /courses [post]
 // CreateCourse creates a new course and invalidates cache
 func CreateCourse(c *fiber.Ctx) error {
 	input := new(models.CreateCourseInput)
@@ -97,6 +133,20 @@ func CreateCourse(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Course created successfully", course)
 }
 
+// UpdateCourse godoc
+// @Summary Update a course
+// @Description Update an existing course's details
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Param id path int true "Course ID"
+// @Param input body models.UpdateCourseInput true "Course update details"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=models.Course}
+// @Failure 400 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 404 {object} responses.Response
+// @Router /courses/{id} [put]
 // UpdateCourse updates an existing course
 func UpdateCourse(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -131,6 +181,18 @@ func UpdateCourse(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Course updated successfully", course)
 }
 
+// DeleteCourse godoc
+// @Summary Delete a course
+// @Description Delete a course by its ID
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Param id path int true "Course ID"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 404 {object} responses.Response
+// @Router /courses/{id} [delete]
 // DeleteCourse deletes a course
 func DeleteCourse(c *fiber.Ctx) error {
 	id := c.Params("id")

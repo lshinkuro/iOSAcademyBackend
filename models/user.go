@@ -14,11 +14,11 @@ const (
 )
 
 type User struct {
-	gorm.Model
-	Email    string `json:"email" gorm:"unique" validate:"required,email"`
-	Password string `json:"-" validate:"required,min=6"`
-	FullName string `json:"full_name" validate:"required"`
-	Role     Role   `json:"role" gorm:"type:varchar(10);default:'student'" validate:"required,oneof=admin student mentor"`
+	gorm.Model `swaggerignore:"true"`
+	Email      string `json:"email" gorm:"unique" validate:"required,email"`
+	Password   string `json:"-" validate:"required,min=6"`
+	FullName   string `json:"full_name" validate:"required"`
+	Role       Role   `json:"role" gorm:"type:varchar(10);default:'student'" validate:"required,oneof=admin student mentor"`
 }
 
 type SignupInput struct {

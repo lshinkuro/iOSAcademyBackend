@@ -7,11 +7,13 @@ import (
 )
 
 type ContentTopic struct {
-	gorm.Model
-	Title      string            `json:"title" validate:"required"`
-	Topics     types.StringArray `json:"topics" gorm:"type:json" validate:"required"`
-	MaterialID uint              `json:"material_id"`
-	Material   *Material         `json:"-" gorm:"foreignKey:MaterialID"`
+	gorm.Model `swaggerignore:"true"` // Ignore gorm.Model in Swagger docs
+	Title      string                 `json:"title" validate:"required"`
+	Content    string                 `json:"content" gorm:"type:text" validate:"required"` // HTML content field
+	Topics     types.StringArray      `json:"topics" gorm:"type:json" validate:"required"`
+	Order      int                    `json:"order" gorm:"default:0"` // For ordering content within a material
+	MaterialID uint                   `json:"material_id"`
+	Material   *Material              `json:"-" gorm:"foreignKey:MaterialID;constraint:OnDelete:CASCADE"`
 }
 
 type VideoCourse struct {
@@ -58,4 +60,19 @@ type UpdateMaterialInput struct {
 	LearningPoints []string       `json:"learningPoints"`
 	Content        []ContentTopic `json:"content"`
 	VideoCourses   []VideoCourse  `json:"videoCourses"`
+}
+
+type CreateContentTopicInput struct {
+	Title      string   `json:"title" validate:"required"`
+	Content    string   `json:"content" validate:"required"` // HTML content
+	Topics     []string `json:"topics" validate:"required"`
+	Order      int      `json:"order"`
+	MaterialID uint     `json:"material_id" validate:"required"`
+}
+
+type UpdateContentTopicInput struct {
+	Title   string   `json:"title"`
+	Content string   `json:"content"` // HTML content
+	Topics  []string `json:"topics"`
+	Order   int      `json:"order"`
 }

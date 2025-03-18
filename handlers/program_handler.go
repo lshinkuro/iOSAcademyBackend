@@ -10,6 +10,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetAllPrograms godoc
+// @Summary Get all programs
+// @Description Retrieve all programs from the system
+// @Tags programs
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=[]models.Program}
+// @Failure 401 {object} responses.Response
+// @Failure 500 {object} responses.Response
+// @Router /programs [get]
 // GetAllPrograms returns all programs
 func GetAllPrograms(c *fiber.Ctx) error {
 	var programs []models.Program
@@ -17,6 +28,18 @@ func GetAllPrograms(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Programs found successfully", programs)
 }
 
+// GetProgram godoc
+// @Summary Get a program by ID
+// @Description Retrieve a specific program by its ID
+// @Tags programs
+// @Accept json
+// @Produce json
+// @Param id path int true "Program ID"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=models.Program}
+// @Failure 401 {object} responses.Response
+// @Failure 404 {object} responses.Response
+// @Router /programs/{id} [get]
 // GetProgram returns a single program
 func GetProgram(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -29,6 +52,19 @@ func GetProgram(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Program found successfully", program)
 }
 
+// CreateProgram godoc
+// @Summary Create a new program
+// @Description Create a new program with the provided details
+// @Tags programs
+// @Accept json
+// @Produce json
+// @Param input body models.CreateProgramInput true "Program creation details"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=models.Program}
+// @Failure 400 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 500 {object} responses.Response
+// @Router /programs [post]
 // CreateProgram creates a new program
 func CreateProgram(c *fiber.Ctx) error {
 	input := new(models.CreateProgramInput)
@@ -56,6 +92,20 @@ func CreateProgram(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Program created successfully", program)
 }
 
+// UpdateProgram godoc
+// @Summary Update a program
+// @Description Update an existing program's details
+// @Tags programs
+// @Accept json
+// @Produce json
+// @Param id path int true "Program ID"
+// @Param input body models.UpdateProgramInput true "Program update details"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response{data=models.Program}
+// @Failure 400 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 404 {object} responses.Response
+// @Router /programs/{id} [put]
 // UpdateProgram updates an existing program
 func UpdateProgram(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -93,6 +143,18 @@ func UpdateProgram(c *fiber.Ctx) error {
 	return responses.SendSuccess(c, "Program updated successfully", program)
 }
 
+// DeleteProgram godoc
+// @Summary Delete a program
+// @Description Delete a program by its ID
+// @Tags programs
+// @Accept json
+// @Produce json
+// @Param id path int true "Program ID"
+// @Security ApiKeyAuth
+// @Success 200 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 404 {object} responses.Response
+// @Router /programs/{id} [delete]
 // DeleteProgram deletes a program
 func DeleteProgram(c *fiber.Ctx) error {
 	id := c.Params("id")

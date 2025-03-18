@@ -9,6 +9,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// SignUp godoc
+// @Summary Register a new user
+// @Description Create a new user account with the provided details
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param input body models.SignupInput true "User registration details"
+// @Success 200 {object} responses.Response{data=map[string]interface{}}
+// @Failure 400 {object} responses.Response
+// @Failure 500 {object} responses.Response
+// @Router /api/v1/auth/signup [post]
 func SignUp(c *fiber.Ctx) error {
 	input := new(models.SignupInput)
 
@@ -57,6 +68,18 @@ func SignUp(c *fiber.Ctx) error {
 	})
 }
 
+// SignIn godoc
+// @Summary Authenticate user
+// @Description Authenticate user with email and password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param input body models.LoginInput true "User login credentials"
+// @Success 200 {object} responses.Response{data=map[string]interface{}}
+// @Failure 400 {object} responses.Response
+// @Failure 401 {object} responses.Response
+// @Failure 500 {object} responses.Response
+// @Router /api/v1/auth/signin [post]
 func SignIn(c *fiber.Ctx) error {
 	input := new(models.LoginInput)
 

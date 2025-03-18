@@ -7,12 +7,12 @@ import (
 )
 
 type Program struct {
-	gorm.Model
-	Title    string            `json:"title" validate:"required"`
-	Type     string            `json:"type" validate:"required,oneof=regular intensive"`
-	Duration string            `json:"duration" validate:"required"`
-	Price    float64           `json:"price" validate:"required,min=0"`
-	Features types.StringArray `json:"features" gorm:"type:json" validate:"required,min=1"`
+	gorm.Model `swaggerignore:"true"`
+	Title      string            `json:"title" validate:"required"`
+	Type       string            `json:"type" validate:"required,oneof=regular intensive"`
+	Duration   string            `json:"duration" validate:"required"`
+	Price      float64           `json:"price" validate:"required,min=0"`
+	Features   types.StringArray `json:"features" gorm:"type:json" validate:"required,min=1"`
 }
 
 type CreateProgramInput struct {
